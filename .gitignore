@@ -1,0 +1,35 @@
+# https://github.com/github/gitignore
+
+# Byte-compiled
+__pycache__/
+
+# File created by Mac OS X
+.DS_Store
+
+# PyCharm
+.idea/
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Data
+*.csv
+*.json
+*.pkl
+*.sqlite3
+*.db
+
+# Logs
+*.log
+
+# Tests
+.pytest_cache/
+
+# Poetry
+poetry.lock
+
+# Project
