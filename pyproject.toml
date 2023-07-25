@@ -12,6 +12,10 @@ python = "^3.11"
 django = "^4.2.3"
 django-environ = "^0.10.0"
 mysqlclient = "^2.2.0"
+pillow = "^10.0.0"
+django-tinymce = "^3.6.1"
+pyenchant = "^3.2.2"
+django-registration = "^3.4"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -25,7 +29,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.isort]
 py_version = 311
 profile = "django"
-known_first_party = []
+known_first_party = ["users"]
 skip = ["*/migrations/*"]
 
 [tool.flake8]

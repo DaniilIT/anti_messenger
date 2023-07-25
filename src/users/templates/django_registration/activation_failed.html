@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Title</title>
+</head>
+<body>
+
+  <h2>Не удалось подтвердить адрес электронной почты</h2>
+
+  <p>{{activation_error.message}}</p>
+
+  <p>
+    {% if activation_error.code == "already_activated" %}
+      Адрес электронной почты уже подтвержден.
+    {% elif activation_error.code == "bad_username" %}
+      Не удалось определить пользователя.
+    {% elif activation_error.code == "expired" %}
+      Время для подтверждения почты истекло.
+    {% elif activation_error.code == "invalid_key" %}
+      Недействительный ключ активации.
+    {% endif %}
+  </p>
+
+</body>
+</html>
