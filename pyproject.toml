@@ -29,7 +29,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.isort]
 py_version = 311
 profile = "django"
-known_first_party = ["users"]
+known_first_party = ["users", "communications"]
 skip = ["*/migrations/*"]
 
 [tool.flake8]
