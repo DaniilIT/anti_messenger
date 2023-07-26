@@ -5,8 +5,6 @@ from django.utils.translation import gettext_lazy as _
 from PIL import Image
 from tinymce.models import HTMLField
 
-from anti_messenger.settings import AVATAR_MAX_SIZE
-
 
 class CustomUserManager(UserManager):
     def _create_user(self, username, email, password, **extra_fields):
@@ -31,10 +29,9 @@ class User(AbstractUser):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        if self.avatar:
-            avatar = Image.open(self.avatar.path)
 
-            if avatar.height > AVATAR_MAX_SIZE or avatar.width > AVATAR_MAX_SIZE:
-                resize = (AVATAR_MAX_SIZE, AVATAR_MAX_SIZE)
+        if self.avatar:
+            with Image.open(self.avatar.path) as avatar:
+                resize = (256, 256)
                 avatar.thumbnail(resize)
                 avatar.save(self.avatar.path)

@@ -3,6 +3,7 @@ import uuid
 from django.db import models
 from django.urls import reverse
 from django.utils.html import strip_tags
+from PIL import Image
 from tinymce import models as tinymce_models
 
 from users.models import User
@@ -30,6 +31,14 @@ class Message(BaseModel):
 
     def get_absolute_url(self):
         return reverse('message-detail', kwargs={'pk': self.pk})
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        with Image.open(self.picture.path) as picture:
+            resize = (1920, 1080)
+            picture.thumbnail(resize)
+            picture.save(self.picture.path)
 
     def __str__(self):
         return self.title if len(self.title) <= 24 else self.title[:24] + '...'

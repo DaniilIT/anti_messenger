@@ -154,8 +154,6 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-AVATAR_MAX_SIZE = 256
-
 LOGIN_URL = 'login'  # '/accounts/login/'
 LOGIN_REDIRECT_URL = 'profile'  # '/accounts/profile/'
 LOGOUT_REDIRECT_URL = None

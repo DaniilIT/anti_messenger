@@ -7,6 +7,7 @@ from django.views.generic import CreateView, DetailView, ListView, View
 from users.models import User
 
 from .models import Message, Theme
+from .utils import ocr_core
 
 
 class ErrorHandlingMixin(View):
@@ -81,6 +82,8 @@ class MessageCreateView(LoginRequiredMixin, ErrorHandlingMixin, CreateView):
             raise ValidationError('Missing "theme" parameter.', code='invalid_theme_id')
         form.instance.theme = get_object_or_404(Theme, pk=theme_id)
         form.instance.title = 'название'
+        form.save()
+        form.instance.generate_text = ocr_core(form.instance.picture.path)
         return super().form_valid(form)
 
 
