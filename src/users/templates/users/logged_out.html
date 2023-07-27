@@ -1,18 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block title %}
+  Sign Out
+{% endblock %}
+
+{% block content %}
   <!--Не авторизован-->
-  <h2>{{ title }}</h2>
+  <h2 class="text-2xl font-bold text-green-900">{{ title }}</h2>
 
-  <p>Благодарим вас за время, проведенное на этом сайте.</p>
+  <p class="mt-4 text-lg text-gray-800">
+    Благодарим вас за время, проведенное на этом сайте.
+  </p>
 
-  <p><a href="{% url 'login' %}">Войти снова</a></p>
-
-</body>
-</html>
+  <p class="mt-6">
+    <a href="{% url 'login' %}" class="font-semibold text-green-900 hover:text-green-700">
+      Войти снова
+    </a>
+  </p>
+{% endblock %}

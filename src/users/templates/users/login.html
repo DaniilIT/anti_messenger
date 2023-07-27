@@ -1,40 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% load tailwind_filters %}
 
-  {% if form.errors %}
-    <p>Your username and password didn't match. Please try again.</p>
-  {% endif %}
+{% block title %}
+  Sign In
+{% endblock %}
 
-  {% if next %}
-    <p>Войдите, чтобы посмотреть эту страницу.</p>
-  {% endif %}
+{% block content %}
+  <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+    <div class="sm:mx-auto sm:w-full sm:max-w-sm">
+      <h2 class="text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+        {% if next %}
+          Войдите, чтобы посмотреть эту страницу
+        {% else %}
+          Войдите в ваш аккаунт
+        {% endif %}
+      </h2>
+    </div>
 
-  <form method="post" action="{% url 'login' %}">
-  {% csrf_token %}
-  <table>
-    <tr>
-      <td>{{ form.username.label_tag }}</td>
-      <td>{{ form.username }}</td>
-    </tr>
-    <tr>
-      <td>{{ form.password.label_tag }}</td>
-      <td>{{ form.password }}</td>
-    </tr>
-  </table>
+    <div class="mt-4 sm:mx-auto sm:w-full sm:max-w-sm">
+      <form class="space-y-6" action="{% url 'login' %}" method="POST">
+        {% csrf_token %}
+        {{ form|crispy }}
 
-  <input type="hidden" name="next" value="{{ next }}">
+        <input type="hidden" name="next" value="{{ next }}">
 
-  <input type="submit" value="login">
-  </form>
+        <div class="text-sm text-end">
+          <a href="{% url 'password_reset' %}" class="font-semibold text-green-900 hover:text-green-700">Забыли пароль?</a>
+        </div>
 
-  <p><a href="{% url 'password_reset' %}">Забыли пароль?</a></p>
+        <button type="submit" class="flex w-full justify-center border border-green-900 rounded-md bg-white px-3 py-1.5 text-sm font-semibold leading-6 text-green-900 shadow-sm transition-colors duration-150 hover:bg-green-700 hover:text-white">
+          Войти
+        </button>
+      </form>
+    </div>
+  </div>
+{% endblock %}
 
-</body>
-</html>
+<!--  <input type="hidden" name="next" value="{{ next }}">-->

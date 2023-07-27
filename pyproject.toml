@@ -18,6 +18,7 @@ pyenchant = "^3.2.2"
 django-registration = "^3.4"
 pytesseract = "^0.3.10"
 opencv-python-headless = "^4.8.0.74"
+crispy-tailwind = "^0.5.0"
 
 
 [tool.poetry.group.dev.dependencies]

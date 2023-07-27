@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" type="image/x-icon" href="{% static '/favicon.ico' %}"/>
+  <title>{% block title %}{% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/static/admin/css/forms.css">
+</head>
+<body>
+  <header>
+    <div class="container mx-auto bg-green-900 p-4 h-16 flex justify-between items-center">
+      <div class="text-white font-bold text-xl">anti-messenger</div>
+      <nav class="flex justify-between items-center">
+        <ul class="flex text-white space-x-8">
+          <li><a href="#" class="font-bold underline underline-offset-4">Главная</a></li>
+          <li><a href="#" class="hover:underline hover:underline-offset-4">Пункт 2</a></li>
+          <li><a href="#" class="hover:underline hover:underline-offset-4">Пункт 3</a></li>
+        </ul>
+      </nav>
+      <div class="flex items-center space-x-4">
+        {% if request.user.is_authenticated %}
+          <a href="{% url 'logout' %}" class="bg-white text-green-900 px-4 py-2 rounded transition-colors duration-300 hover:bg-green-700 hover:text-white">Log Out</a>
+          <div class="w-10 h-10 bg-green-700 rounded-full flex justify-center items-center">
+            <img src="{{ request.user.avatar.url }}" alt="Avatar" class="rounded-full">
+          </div>
+        {% else %}
+          <a href="{% url 'login' %}" class="bg-white text-green-900 px-4 py-2 rounded transition-colors duration-300 hover:bg-green-700 hover:text-white">Log In</a>
+          <a href="{% url 'django_registration_register' %}" class="bg-white text-green-900 px-4 py-2 rounded transition-colors duration-300 hover:bg-green-700 hover:text-white">Log Up</a>
+        {% endif %}
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="container mx-auto flex divide-x" style="min-height: calc(100vh - 128px);">
+      <div class="p-4 flex-1 pr-4 bg-stone-50">
+        {% block content %}
+        {% endblock %}
+      </div>
+      <aside class="p-4 pl-4 shrink-0 w-80">
+        <h2 class="font-bold text-center">Рекламный блок</h2>
+        <p class="mt-4 text-center">Здесь могла быть ваша реклама.</p>
+      </aside>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container mx-auto bg-green-900 p-4 h-16 text-white text-center">
+      <p>&copy; 2023 anti-messenger. Все права защищены.</p>
+    </div>
+  </footer>
+</body>
+</html>

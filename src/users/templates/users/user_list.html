@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Users
+{% endblock %}
+
+{% block content %}
+  <h2 class="text-2xl font-bold text-green-900">Пользователи</h2>
+
+  <form class="flex items-center mt-4" action="{% url 'user-list' %}"  method="GET">
+    <input type="text" value="{{ request.GET.search }}" class="border border-gray-300 rounded-lg w-4/5 px-4 py-2 mr-2" name="search">
+    <button type="submit" class="border border-green-900 bg-white text-green-900 rounded-md leading-6 w-1/5 px-3 py-2 text-sm font-semibold text-green-900 shadow-sm transition-colors duration-150 hover:bg-green-700 hover:text-white">Поиск</button>
+  </form>
+
+  <div class="flex flex-wrap justify-center gap-4 mt-4">
+    {% for user in users %}
+      <div class="bg-yellow-50 h-48 rounded-lg shadow-md p-4 w-full mb-4 flex items-center">
+        <div class="flex-shrink-0 mr-4">
+          <img src="{{ user.avatar.url }}" alt="Avatar" class="w-24 h-24 rounded-full">
+        </div>
+        <div class="flex flex-shrink-0 w-100 flex-col m-4">
+          <p class="text-xl font-semibold text-green-900">{{ user.get_full_name }}</p>
+          <p class="text-gray-600">Количество сообщений: {{ user.messages_count }}</p>
+        </div>
+        <div class="ml-4 bg-green-50 h-full w-full overflow-hidden rounded-lg shadow-md p-4">
+          <p class="text-gray-600">{{ user.about_yourself|safe }}</p>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+{% endblock %}

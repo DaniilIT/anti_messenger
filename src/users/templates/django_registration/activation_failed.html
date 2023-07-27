@@ -1,18 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-  <h2>Не удалось подтвердить адрес электронной почты</h2>
+{% block title %}
+  Password Reset Done
+{% endblock %}
 
-  <p>{{activation_error.message}}</p>
-
-  <p>
+{% block content %}
+  <h2 class="text-2xl font-bold text-green-900">
+    Не удалось подтвердить адрес электронной почты
+  </h2>
+  <p class="mt-4 text-lg text-gray-800">
+    {{activation_error.message}}
+  </p>
+  <p class="mt-4 text-lg text-gray-800">
     {% if activation_error.code == "already_activated" %}
       Адрес электронной почты уже подтвержден.
     {% elif activation_error.code == "bad_username" %}
@@ -23,6 +22,4 @@
       Недействительный ключ активации.
     {% endif %}
   </p>
-
-</body>
-</html>
+{% endblock %}
