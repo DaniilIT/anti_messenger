@@ -1,0 +1,21 @@
+<div class="bg-yellow-50 rounded-lg shadow-md p-4 w-full mb-4">
+  <h2 class="text-xl font-semibold text-green-900 mb-2">
+    {% if request.path == '/anti/comments/' %}
+      {{ message.title }}
+    {% else %}
+      <a href="{% url 'comment-list' %}?message={{ message.pk }}">{{ message.title }}</a>
+    {% endif %}
+  </h2>
+  <div class="mb-4 mt-4">
+    {% if request.path == '/anti/comments/' %}
+        <img src="{{ message.picture.url }}" alt="picture" class="mx-auto rounded-lg w-auto h-auto max-h-64">
+    {% else %}
+      <a href="{% url 'comment-list' %}?message={{ message.pk }}">
+        <img src="{{ message.picture.url }}" alt="picture" class="mx-auto rounded-lg w-auto h-auto max-h-64">
+      </a>
+    {% endif %}
+  </div>
+  <div class="bg-stone-50 rounded-lg p-4 shadow-md">
+    <p class="text-gray-800 font-bold text-lg">{{ message.generate_text }}</p>
+  </div>
+</div>

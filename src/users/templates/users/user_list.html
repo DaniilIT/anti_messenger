@@ -14,19 +14,7 @@
 
   <div class="flex flex-wrap justify-center gap-4 mt-4">
     {% for user in users %}
-      <div class="bg-yellow-50 h-48 rounded-lg shadow-md p-4 w-full mb-4 flex items-center">
-        <div class="flex-shrink-0 mr-4">
-          <img src="{{ user.avatar.url }}" alt="Avatar" class="w-24 h-24 rounded-full">
-        </div>
-        <div class="flex flex-shrink-0 w-100 flex-col m-4">
-          <p class="text-xl font-semibold text-green-900">{{ user.get_full_name }}</p>
-          <p class="text-gray-600">Количество сообщений: {{ user.messages_count }}</p>
-        </div>
-        <div class="ml-4 bg-green-50 h-full w-full overflow-hidden rounded-lg shadow-md p-4">
-          <p class="text-gray-600">{{ user.about_yourself|safe }}</p>
-        </div>
-      </div>
+      {% include 'cards/user_card.html' with user=user %}
     {% endfor %}
   </div>
-
 {% endblock %}

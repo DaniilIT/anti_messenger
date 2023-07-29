@@ -14,6 +14,8 @@ class BaseModel(models.Model):
     created = models.DateTimeField('Дата создания', auto_now_add=True)
     updated = models.DateTimeField('Дата последнего обновления', auto_now=True)
 
+    objects = models.Manager()
+
     class Meta:
         abstract = True
 
@@ -30,7 +32,7 @@ class Message(BaseModel):
         verbose_name_plural = 'Сообщения'
 
     def get_absolute_url(self):
-        return reverse('message-detail', kwargs={'pk': self.pk})
+        return reverse('comment-list') + f'?message={self.pk}'
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -54,7 +56,7 @@ class Theme(BaseModel):
         verbose_name_plural = 'Темы'
 
     def get_absolute_url(self):
-        return reverse('theme-detail', kwargs={'pk': self.pk})
+        return reverse('message-list') + f'?theme={self.pk}'
 
     def __str__(self):
         return self.title if len(self.title) <= 24 else self.title[:24] + '...'
@@ -70,6 +72,9 @@ class Comment(BaseModel):
     class Meta:
         verbose_name = 'Комментарий'
         verbose_name_plural = 'Комментарии'
+
+    def get_absolute_url(self):
+        return reverse('comment-list') + f'?message={self.message.pk}'
 
     def __str__(self):
         text = strip_tags(self.text)

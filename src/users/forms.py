@@ -11,6 +11,10 @@ class CustomRegistrationForm(RegistrationForm):
 
 
 class ProfileForm(forms.ModelForm):
+    first_name = forms.CharField(label='Имя', max_length=30, required=False)
+
+    last_name = forms.CharField(label='Фамилия', max_length=30, required=False)
+
     avatar = forms.ImageField(
         label='Загрузите фото',
         required=False,
@@ -25,4 +29,4 @@ class ProfileForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('avatar', 'about_yourself')
+        fields = ('first_name', 'last_name', 'avatar', 'about_yourself')

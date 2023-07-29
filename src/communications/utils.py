@@ -22,4 +22,4 @@ def ocr_core(filename: str) -> str:
     cv2.imwrite(filename, img_bin)
 
     text = image_to_string(img_bin, lang='eng+rus', config='--oem 3 --psm 6')
-    return text.strip()
+    return text

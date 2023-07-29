@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.contrib.auth.validators import UnicodeUsernameValidator
-from django.db.models import CharField, EmailField, ImageField
+from django.db.models import CharField, Count, EmailField, ImageField
+from django.http import Http404
 from django.utils.translation import gettext_lazy as _
 from PIL import Image
 from tinymce.models import HTMLField
@@ -11,6 +12,16 @@ class CustomUserManager(UserManager):
         if not email:
             raise ValueError('The given email must be set')
         return super()._create_user(username, email, password, **extra_fields)
+
+    def get_user_for_card(self, request_user, username=None):
+        """ Получить пользователя с подсчитанным количеством его сообщений
+        """
+        username = username or request_user.username
+        try:
+            user = self.annotate(messages_count=Count('themes__messages')).get(pk=username)
+        except self.model.DoesNotExist:
+            raise Http404('No User matches the given query.')
+        return user
 
 
 class User(AbstractUser):

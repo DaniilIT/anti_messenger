@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  anti-messenger
+{% endblock %}
+
+{% block content %}
+<h2 class="text-2xl font-bold text-green-900">Добро пожаловать на <strong>anti-messenger</strong></h2>
+
+  <p class="mt-4 text-lg text-gray-800">
+    Это сайт, где вы можете загружать картинки с тестом и получать текст из них.
+  </p>
+
+  {% if not request.user.is_authenticated %}
+    <p class="mt-6">
+      <a href="{% url 'login' %}" class="font-semibold text-green-900 hover:text-green-700">
+        Войти
+      </a>
+    </p>
+  {% endif %}
+{% endblock %}

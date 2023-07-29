@@ -157,7 +157,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 LOGIN_URL = 'login'  # '/accounts/login/'
-LOGIN_REDIRECT_URL = 'profile'  # '/accounts/profile/'
+LOGIN_REDIRECT_URL = 'theme-list'  # '/accounts/profile/'
 LOGOUT_REDIRECT_URL = None
 
 ACCOUNT_ACTIVATION_DAYS = 7
@@ -167,14 +167,16 @@ TINYMCE_DEFAULT_CONFIG = {
     'theme': 'silver',
     'branding': False,
     'skin': 'oxide-dark',
-    'width': '960px',
+    'width': '100%',
     'height': '320px',
     'menubar': 'file edit tools view format',
-    'plugins': 'spellchecker code help wordcount autolink',
+    'plugins': 'spellchecker code help wordcount autolink, paste, autoresize',
     'toolbar': """
         undo redo | bold italic | forecolor backcolor | fontselect fontsizeselect formatselect |
         outdent indent |  numlist bullist checklist | removeformat | spellchecker | code | help
     """,
+    # 'paste_as_text': True,
+    'autoresize_bottom_margin': 16,
     'cleanup_on_startup': True,
     'custom_undo_redo_levels': 10,
 }

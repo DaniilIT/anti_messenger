@@ -1,0 +1,14 @@
+{% if request.path != '/anti/messages/' %}
+  <a href="{% url 'message-list' %}?theme={{ theme.pk }}" class="block w-full">
+{% endif %}
+
+<div class="block bg-yellow-50 h-24 rounded-lg shadow-md p-4 w-full mb-4 flex items-center">
+  <div class="flex flex-shrink-0 w-100 flex-col m-4">
+    <p class="text-xl font-semibold text-green-900">{{ theme.title }}</p>
+    <p class="text-gray-600">Количество сообщений: {{ theme.messages_count }}</p>
+  </div>
+</div>
+
+{% if request.path != '/anti/messages/' %}
+  </a>
+{% endif %}

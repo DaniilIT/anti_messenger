@@ -9,23 +9,48 @@
   <title>{% block title %}{% endblock %}</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="/static/admin/css/forms.css">
+  {% block head %}{% endblock %}
 </head>
 <body>
   <header>
     <div class="container mx-auto bg-green-900 p-4 h-16 flex justify-between items-center">
-      <div class="text-white font-bold text-xl">anti-messenger</div>
+      <div>
+        <a href="{% url 'main-page' %}" class="text-white font-bold text-xl">anti-messenger</a>
+      </div>
       <nav class="flex justify-between items-center">
         <ul class="flex text-white space-x-8">
-          <li><a href="#" class="font-bold underline underline-offset-4">Главная</a></li>
-          <li><a href="#" class="hover:underline hover:underline-offset-4">Пункт 2</a></li>
-          <li><a href="#" class="hover:underline hover:underline-offset-4">Пункт 3</a></li>
+          <li>
+            {% if request.path == '/' %}
+              <a href="{% url 'main-page' %}" class="font-bold underline underline-offset-4">Главная</a>
+            {% else %}
+              <a href="{% url 'main-page' %}" class="hover:underline hover:underline-offset-4">Главная</a>
+            {% endif %}
+          </li>
+          <li>
+            {% if request.path == '/accounts/users/' %}
+              <a href="{% url 'user-list' %}" class="font-bold underline underline-offset-4">Пользователи</a>
+            {% else %}
+              <a href="{% url 'user-list' %}" class="hover:underline hover:underline-offset-4">Пользователи</a>
+            {% endif %}
+          </li>
+          <li>
+            {% if request.path != '/anti/themes/' %}
+              <a href="{% url 'theme-list' %}" class="hover:underline hover:underline-offset-4">Мои темы</a>
+            {% elif not request.GET.user or request.GET.user == request.user.username %}
+              <a href="{% url 'theme-list' %}" class="font-bold underline underline-offset-4">Мои темы</a>
+            {% else %}
+              <a href="{% url 'theme-list' %}" class="hover:underline hover:underline-offset-4">Мои темы</a>
+            {% endif %}
+          </li>
         </ul>
       </nav>
       <div class="flex items-center space-x-4">
         {% if request.user.is_authenticated %}
           <a href="{% url 'logout' %}" class="bg-white text-green-900 px-4 py-2 rounded transition-colors duration-300 hover:bg-green-700 hover:text-white">Log Out</a>
           <div class="w-10 h-10 bg-green-700 rounded-full flex justify-center items-center">
-            <img src="{{ request.user.avatar.url }}" alt="Avatar" class="rounded-full">
+            <a href="{% url 'theme-list' %}">
+              <img src="{{ request.user.avatar.url }}" alt="avatar" class="rounded-full">
+            </a>
           </div>
         {% else %}
           <a href="{% url 'login' %}" class="bg-white text-green-900 px-4 py-2 rounded transition-colors duration-300 hover:bg-green-700 hover:text-white">Log In</a>

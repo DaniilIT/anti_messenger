@@ -1,12 +1,14 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ValidationError
-from django.http import HttpResponseBadRequest
+from django.db.models import Count
+from django.http import HttpResponseBadRequest, HttpResponseNotAllowed
 from django.shortcuts import get_object_or_404
-from django.views.generic import CreateView, DetailView, ListView, View
+from django.views.generic import CreateView, ListView, View
 
 from users.models import User
 
-from .models import Message, Theme
+from .forms import CommentForm, MessageForm, ThemeForm
+from .models import Comment, Message, Theme
 from .utils import ocr_core
 
 
@@ -18,17 +20,29 @@ class ErrorHandlingMixin(View):
             return HttpResponseBadRequest(str(e))
 
 
-class ThemeListView(ErrorHandlingMixin, ListView):
+class ThemeListView(LoginRequiredMixin, ListView):
     model = Theme
     # template_name = 'communications/theme_list.html'
     context_object_name = 'themes'
+    extra_context = {'form': ThemeForm()}
+
+    def get(self, request, *args, **kwargs):
+        self.current_user = User.objects.get_user_for_card(
+            request.user,
+            username=self.request.GET.get('user')
+        )
+        return super().get(request, *args, **kwargs)
 
     def get_queryset(self):
-        username = self.request.GET.get('user')
-        if username is None:
-            raise ValidationError('Missing "user" parameter.', code='invalid_username')
-        user = get_object_or_404(User, pk=username)
-        return Theme.objects.filter(user=user).order_by('-updated')
+        return Theme.objects\
+            .filter(user=self.current_user)\
+            .annotate(messages_count=Count('messages'))\
+            .order_by('-updated')
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['current_user'] = self.current_user
+        return ctx
 
 
 class ThemeCreateView(LoginRequiredMixin, CreateView):
@@ -40,40 +54,47 @@ class ThemeCreateView(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
-    def get_context_data(self, **kwargs):
-        ctx = super().get_context_data(**kwargs)
-        # ctx['title'] = News.objects.filter(pk=self.kwargs['pk']).first()
-        # ctx['title'] = 'Добавление статьи'
-        return ctx
+    def get(self, request, *args, **kwargs):
+        return HttpResponseNotAllowed(['POST'])
 
 
-class ThemeDetailView(LoginRequiredMixin, DetailView):
-    model = Theme
-    # template_name = 'communications/theme_detail.html'
-
-    def get_context_data(self, **kwargs):
-        ctx = super().get_context_data(**kwargs)
-        # ctx['title'] = Course.objects.filter(slug=self.kwargs['slug']).first()
-        # ctx['lessons'] = Lesson.objects.filter(course=ctx['title']).order_by('number')
-        return ctx
-
-
-class MessageListView(ErrorHandlingMixin, ListView):
+class MessageListView(LoginRequiredMixin, ErrorHandlingMixin, ListView):
     model = Message
     # template_name = 'communications/message_list.html'
     context_object_name = 'messages'
+    extra_context = {'form': MessageForm()}
 
-    def get_queryset(self):
+    def get(self, request, *args, **kwargs):
         theme_id = self.request.GET.get('theme')
         if theme_id is None:
             raise ValidationError('Missing "theme" parameter.', code='invalid_theme_id')
-        theme = get_object_or_404(Theme, pk=theme_id)
-        return Message.objects.filter(theme=theme).order_by('-updated')
+
+        self.current_theme = get_object_or_404(
+            Theme.objects.select_related('user').annotate(messages_count=Count('messages')),
+            pk=theme_id
+        )
+        self.current_user = User.objects.get_user_for_card(
+            self.request.user,
+            username=self.current_theme.user.username
+        )
+        return super().get(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return Message.objects\
+            .filter(theme=self.current_theme)\
+            .annotate(comments_count=Count('comments'))\
+            .order_by('-updated')
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['current_user'] = self.current_user
+        ctx['current_theme'] = self.current_theme
+        return ctx
 
 
 class MessageCreateView(LoginRequiredMixin, ErrorHandlingMixin, CreateView):
     model = Message
-    # template_name = 'Communications/message_form.html'
+    # template_name = 'communications/message_form.html'
     fields = ('title', 'picture')
 
     def form_valid(self, form):
@@ -81,12 +102,68 @@ class MessageCreateView(LoginRequiredMixin, ErrorHandlingMixin, CreateView):
         if theme_id is None:
             raise ValidationError('Missing "theme" parameter.', code='invalid_theme_id')
         form.instance.theme = get_object_or_404(Theme, pk=theme_id)
-        form.instance.title = 'название'
-        form.save()
-        form.instance.generate_text = ocr_core(form.instance.picture.path)
+        form.instance.user = self.request.user
+        response = super().form_valid(form)
+        self.object.generate_text = ocr_core(form.instance.picture.path)
+        self.object.save()
+        return response
+
+    def get(self, request, *args, **kwargs):
+        return HttpResponseNotAllowed(['POST'])
+
+
+class CommentListView(ErrorHandlingMixin, ListView):
+    model = Comment
+    # template_name = 'communications/comment_list.html'
+    context_object_name = 'comments'
+    extra_context = {'form': CommentForm()}
+
+    def get(self, request, *args, **kwargs):
+        message_id = self.request.GET.get('message')
+        if message_id is None:
+            raise ValidationError('Missing "message" parameter.', code='invalid_message_id')
+
+        self.current_message = get_object_or_404(
+            Message.objects.select_related('theme', 'theme__user'),
+            pk=message_id
+        )
+        self.current_theme = get_object_or_404(
+            Theme.objects.annotate(messages_count=Count('messages')),
+            pk=self.current_message.theme.pk
+        )
+        self.current_user = User.objects.get_user_for_card(
+            self.request.user,
+            username=self.current_message.theme.user.username
+        )
+        return super().get(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return Comment.objects \
+            .select_related('user') \
+            .filter(message=self.current_message) \
+            .order_by('-updated')
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['current_user'] = self.current_user
+        ctx['current_theme'] = self.current_theme
+        ctx['current_message'] = self.current_message
+        return ctx
+
+
+class CommentCreateView(LoginRequiredMixin, ErrorHandlingMixin, CreateView):
+    model = Comment
+    # template_name = 'communications/comment_form.html'
+    fields = ('text',)
+
+    def form_valid(self, form):
+        message_id = self.request.GET.get('message')
+        if message_id is None:
+            raise ValidationError('Missing "message" parameter.', code='invalid_message_id')
+
+        form.instance.message = get_object_or_404(Message, pk=message_id)
+        form.instance.user = self.request.user
         return super().form_valid(form)
 
-
-class MessageDetailView(LoginRequiredMixin, DetailView):
-    model = Message
-    # template_name = 'communications/message_detail.html'
+    def get(self, request, *args, **kwargs):
+        return HttpResponseNotAllowed(['POST'])
