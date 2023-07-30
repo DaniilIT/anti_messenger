@@ -10,8 +10,7 @@ RUN groupadd --system service && \
     useradd --system -g service api
 
 RUN apt-get update && \
-    apt-get install curl build-essential pkg-config default-libmysqlclient-dev \
-    libenchant-2-dev -y --no-install-recommends && \
+    apt-get install build-essential pkg-config default-libmysqlclient-dev libtesseract-dev curl -y && \
     pip install --upgrade pip && \
     pip install poetry
 
@@ -25,7 +24,6 @@ USER api
 
 ENTRYPOINT ["bash", "entrypoint.sh"]
 
-# CMD ["gunicorn", "anti_messenger.wsgi:application", "-w", "2", "-b", "0.0.0.0:8000"]
-CMD ["python", "./manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["gunicorn", "anti_messenger.wsgi:application", "-w", "2", "-b", "0.0.0.0:8000"]
 
 EXPOSE 8000

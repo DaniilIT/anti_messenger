@@ -3,15 +3,28 @@ version: "3.9"
 name: anti_messenger
 
 services:
+  nginx:
+    image: nginx:1.25
+    container_name: am_nginx
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./src/static:/usr/share/nginx/html/static:ro
+      - ./src/media:/usr/share/nginx/html/media:ro
+    ports:
+      - 80:80
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+
   api:
     build: .
     container_name: am_api
     env_file:
       - .env
     environment:
+      - DEBUG=off
       - DB_HOST=database
-    ports:
-      - 8000:8000
     restart: unless-stopped
     volumes:
       - ./src:/opt/anti_messenger

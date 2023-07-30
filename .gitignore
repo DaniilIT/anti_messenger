@@ -33,4 +33,5 @@ ENV/
 poetry.lock
 
 # Project
+static/
 media/

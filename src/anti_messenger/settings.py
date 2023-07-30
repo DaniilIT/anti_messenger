@@ -100,7 +100,6 @@ DATABASES = {
         'PORT': env('DB_PORT'),
         'OPTIONS': {
             'charset': 'utf8mb4',
-            # 'threaded': True,
         },
     }
 }
@@ -168,19 +167,13 @@ TINYMCE_DEFAULT_CONFIG = {
     'branding': False,
     'skin': 'oxide-dark',
     'width': '100%',
-    'height': '320px',
-    'menubar': 'file edit tools view format',
-    'plugins': 'spellchecker code help wordcount autolink, paste, autoresize',
+    'menubar': False,
+    'plugins': 'code help wordcount autolink, paste, autoresize',
     'toolbar': """
         undo redo | bold italic | forecolor backcolor | fontselect fontsizeselect formatselect |
-        outdent indent |  numlist bullist checklist | removeformat | spellchecker | code | help
+        outdent indent |  numlist bullist checklist | removeformat | code | help
     """,
-    # 'paste_as_text': True,
-    'autoresize_bottom_margin': 16,
-    'cleanup_on_startup': True,
-    'custom_undo_redo_levels': 10,
 }
-TINYMCE_SPELLCHECKER = True
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # smtp - console

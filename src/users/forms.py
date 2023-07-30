@@ -24,7 +24,7 @@ class ProfileForm(forms.ModelForm):
     about_yourself = forms.CharField(
         label='Про себя',
         required=False,
-        widget=TinyMCE()
+        widget=TinyMCE(attrs={'height': 320})
     )
 
     class Meta:
