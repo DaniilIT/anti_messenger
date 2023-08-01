@@ -4,15 +4,16 @@ WORKDIR /opt/anti_messenger
 
 ENV PYTHONUNBUFFERED=1 \
     PYTHONPATH=/opt/anti_messenger \
-    PIP_NO_CACHE_DIR=off
+    PIP_NO_CACHE_DIR=on
 
 RUN groupadd --system service && \
     useradd --system -g service api
 
 RUN apt-get update && \
-    apt-get install build-essential pkg-config default-libmysqlclient-dev libtesseract-dev curl -y && \
+    apt-get install build-essential pkg-config default-libmysqlclient-dev \
+    tesseract-ocr tesseract-ocr-rus libtesseract-dev curl -y --no-install-recommends && \
     pip install --upgrade pip && \
-    pip install poetry
+    pip install poetry --no-cache-dir
 
 COPY pyproject.toml ./
 RUN poetry config virtualenvs.create false && \

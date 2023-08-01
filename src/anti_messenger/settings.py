@@ -9,7 +9,6 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
 from pathlib import Path
 
 from environ import Env
@@ -167,6 +166,7 @@ TINYMCE_DEFAULT_CONFIG = {
     'branding': False,
     'skin': 'oxide-dark',
     'width': '100%',
+    'height': '200px',
     'menubar': False,
     'plugins': 'code help wordcount autolink, paste, autoresize',
     'toolbar': """
@@ -174,7 +174,6 @@ TINYMCE_DEFAULT_CONFIG = {
         outdent indent |  numlist bullist checklist | removeformat | code | help
     """,
 }
-
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # smtp - console
 EMAIL_HOST = 'smtp.gmail.com'

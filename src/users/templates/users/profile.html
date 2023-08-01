@@ -6,10 +6,6 @@
   Profile
 {% endblock %}
 
-{% block head %}
-  {{ form.media }}
-{% endblock %}
-
 {% block content %}
   {% include 'cards/user_card.html' with user=current_user %}
 
@@ -33,4 +29,7 @@
       <a href="{% url 'password_change' %}" class="font-semibold text-green-900 hover:text-green-700">сменить пароль</a>
     </div>
   </div>
+
+  {{ form.media }}
+
 {% endblock %}

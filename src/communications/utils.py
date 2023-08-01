@@ -2,27 +2,20 @@ import cv2
 from pytesseract import image_to_string
 
 
-def ocr_core(filename: str) -> str:
+def ocr_core(img_path: str) -> str:
     """Optical Character Recognition"""
-    image = cv2.imread(filename)
-    image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    cv_img = cv2.imread(img_path)
+    gray_img = cv2.cvtColor(cv_img, cv2.COLOR_BGR2GRAY)
 
-    # Удаление шума и улучшение контраста
-    image_filtered = cv2.GaussianBlur(image_gray, (3, 3), 0)
-    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
-    image_clahe = clahe.apply(image_filtered)
-
-    # Построение гистограммы яркости
-    hist = cv2.calcHist([image_clahe], [0], None, [256], [0, 256])
-
-    # Если черных пикселей больше, инвертируем цвета
+    hist = cv2.calcHist([gray_img], [0], None, [256], [0, 256])
     thresh_binary = cv2.THRESH_BINARY_INV if hist[:128].sum() > hist[128:].sum() else cv2.THRESH_BINARY
-    _, img_bin = cv2.threshold(image_clahe, 0, 255, thresh_binary | cv2.THRESH_OTSU)
+    _, binarized_img = cv2.threshold(gray_img, 0, 255, thresh_binary | cv2.THRESH_OTSU)
 
-    cv2.imwrite(filename, img_bin)
+    # denoised_img = cv2.GaussianBlur(binarized_img, (3, 3), cv2.BORDER_DEFAULT)
+    rgb_img = cv2.cvtColor(binarized_img, cv2.COLOR_GRAY2RGB)
+    cv2.imwrite(img_path, rgb_img)
 
-    text = image_to_string(img_bin, lang='eng+rus', config='--oem 3 --psm 6')
-
+    text = image_to_string(rgb_img, lang='eng+rus', config='--oem 3 --psm 6')
     # удалить пустые строчки
     text = '\n'.join(s.rstrip() for s in text.split('\n') if s.rstrip())
     return text

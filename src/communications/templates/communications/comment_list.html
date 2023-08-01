@@ -5,10 +5,6 @@
   Messages
 {% endblock %}
 
-{% block head %}
-  {{ form.media }}
-{% endblock %}
-
 {% block content %}
   {% include 'cards/user_card.html' with user=current_user %}
 
@@ -36,4 +32,5 @@
     {% endfor %}
   </div>
 
+  {{ form.media }}
 {% endblock %}

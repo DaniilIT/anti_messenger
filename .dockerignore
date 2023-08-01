@@ -33,4 +33,3 @@ Dockerfile
 .git
 .gitignore
 .env.example
-static/

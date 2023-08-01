@@ -23,10 +23,10 @@ from users.views import main_page
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('tinymce/', include('tinymce.urls')),
     path('', main_page, name='main-page'),
     path('accounts/', include('users.urls')),
     path('anti/', include('communications.urls')),
+    path('tinymce/', include('tinymce.urls')),
 ]
 
 if settings.DEBUG:
