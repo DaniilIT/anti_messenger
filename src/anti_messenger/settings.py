@@ -132,8 +132,6 @@ TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 
-USE_L10N = True
-
 DATETIME_FORMAT = 'd/m/Y H:i'
 
 USE_TZ = True

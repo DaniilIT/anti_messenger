@@ -23,6 +23,8 @@ gunicorn = "^21.2.0"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.3.3"
+pytest-django = "^4.5.2"
+pytest-factoryboy = "^2.5.1"
 
 [build-system]
 requires = ["poetry-core"]
@@ -43,3 +45,7 @@ per-file-ignores = [
     "*/migrations/*: E501",
     "venv/*: E501"
 ]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "anti_messenger.settings"
+python_files = "test_*.py"

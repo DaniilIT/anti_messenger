@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db.models import CharField, Count, EmailField, ImageField
-from django.http import Http404
+from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
 from PIL import Image
 from tinymce.models import HTMLField
@@ -17,10 +17,10 @@ class CustomUserManager(UserManager):
         """ Получить пользователя с подсчитанным количеством его сообщений
         """
         username = username or request_user.username
-        try:
-            user = self.annotate(messages_count=Count('themes__messages')).get(pk=username)
-        except self.model.DoesNotExist:
-            raise Http404('No User matches the given query.')
+        user = get_object_or_404(
+            self.annotate(messages_count=Count('themes__messages')),
+            pk=username
+        )
         return user
 
 
