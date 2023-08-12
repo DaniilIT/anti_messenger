@@ -5,7 +5,7 @@ description = "Picture messaging application."
 authors = ["Manuilov Daniil <manuilovdaniil@yandex.ru>"]
 license = "MIT"
 readme = "README.md"
-packages = [{include = "anti_messenger"}]
+packages = [{include = "anti_messenger", from = "src"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
@@ -34,7 +34,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.isort]
 py_version = 311
 profile = "django"
-known_first_party = ["users", "communications"]
+known_first_party = ["anti_messenger", "users", "communications"]
 skip = ["*/migrations/*"]
 
 [tool.flake8]

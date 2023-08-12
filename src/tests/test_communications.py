@@ -1,8 +1,9 @@
+from pathlib import Path
+
 import pytest
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 
-from anti_messenger.settings import MEDIA_ROOT
 from communications.models import Comment, Message, Theme
 
 
@@ -29,7 +30,7 @@ def test_message_list_view(client, logged_user, test_theme):
 
 @pytest.mark.django_db
 def test_create_message(client, logged_user, test_theme):
-    with open(MEDIA_ROOT / 'test_image.jpg', 'rb') as img:
+    with open(Path(__file__).resolve().parent / 'test_image.jpg', 'rb') as img:
         uploaded_img = SimpleUploadedFile('test_image.jpg', img.read())
         response = client.post(
             reverse('message-create') + f'?theme={test_theme.id}',
